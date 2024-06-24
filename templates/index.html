@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>AI Assistant</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 
 <body>
@@ -17,12 +18,15 @@
 
     <div id="chat-container">
         <h2>Chat</h2>
-        <div id="chat-box"></div>
+        <div id="chat-box" class="markdown-content"></div>
         <form id="chat-form">
             <input type="text" id="message" name="message" required>
             <button type="submit">Send</button>
         </form>
     </div>
+
+    <!-- Loading spinner -->
+    <div id="loading-spinner" class="spinner" style="display: none;"></div>
 
     <script>
         var threadID = ""; // global thread id for conversation
@@ -63,6 +67,7 @@
             const message = document.getElementById('message').value;
             const subjectInput = document.getElementById('subject').value;
             const subject = subjectInput || 'general';
+            document.getElementById('loading-spinner').style.display = 'block';
             fetch('/chat', {
                 method: 'POST',
                 headers: {
@@ -75,11 +80,12 @@
                     let ai_responses = data["responses"];
                     // console.log(ai_responses) this is an object w/ keys of subject and values of message
                     for (let subject in ai_responses) {
-                        document.getElementById('chat-box').innerHTML += `<p>${subject}: ${ai_responses[subject]}</p>`;
-
+                        document.getElementById('chat-box').innerHTML += `<p><h3>${subject}:</h3> ${ai_responses[subject]}</p>`;
                     }
                     // document.getElementById('chat-box').innerHTML += `<p>You: ${message}</p><p>AI: ${data}</p>`;
                     document.getElementById('message').value = '';
+                    // Hide the loading spinner
+                    document.getElementById('loading-spinner').style.display = 'none';
                 });
         });
     </script>

@@ -3,6 +3,7 @@ from ai_utils.ai_base import AIHandler
 import json
 import time
 import os
+import markdown
 
 def show_json(obj):
     dict = json.loads(obj.model_dump_json())
@@ -126,7 +127,11 @@ class AssistantsHandler(AIHandler):
         for message in messages:
             # print(message)
             if message.content[0].type == 'text':
-                message_response.append(message.content[0].text.value)
+                content = message.content[0].text.value
+                if content == "" or content == "0":
+                    message_response.append(content)
+                    continue
+                message_response.append(markdown.markdown(content))
             if message.content[0].type == 'image_url':
                 message_response.append(message.content[0].image_url.url)
             if message.content[0].type == 'image_file':
