@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AI Assistant</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
+</head>
+
+<body>
+    <h1>AI Assistant Provisioning</h1>
+    <form id="provision-form">
+        <label for="subject">Subject Expertise:</label>
+        <input type="text" id="subject" name="subject">
+        <button type="submit">Provision AI Assistant</button>
+    </form>
+
+    <div id="chat-container">
+        <h2>Chat</h2>
+        <div id="chat-box"></div>
+        <form id="chat-form">
+            <input type="text" id="message" name="message" required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script>
+        var threadID = ""; // global thread id for conversation
+        document.addEventListener('DOMContentLoaded', function () {
+            // Send an API request on page load to initialize the general assistant
+            fetch('/startConversation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ subject: 'general' })
+            }).then(response => response.json())
+                .then(data => {
+                    document.getElementById('chat-box').innerHTML += `<p>${data["subject"]} ${data["message"]}</p>`;
+                    threadID = data["threadID"];
+                });
+        });
+
+        document.getElementById('provision-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const subject = document.getElementById('subject').value;
+            console.log("thread ID: ", threadID)
+            fetch('/provision', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ subject, threadID: threadID })
+            }).then(response => response.json())
+                .then(data => {
+                    document.getElementById('chat-box').innerHTML += `<p>${data["subject"]} ${data["message"]}</p>`;
+                });
+            document.getElementById('subject').value = '';
+        });
+
+        document.getElementById('chat-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const message = document.getElementById('message').value;
+            const subjectInput = document.getElementById('subject').value;
+            const subject = subjectInput || 'general';
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message, subject })
+            }).then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    let ai_responses = data["responses"];
+                    // console.log(ai_responses) this is an object w/ keys of subject and values of message
+                    for (let subject in ai_responses) {
+                        document.getElementById('chat-box').innerHTML += `<p>${subject}: ${ai_responses[subject]}</p>`;
+
+                    }
+                    // document.getElementById('chat-box').innerHTML += `<p>You: ${message}</p><p>AI: ${data}</p>`;
+                    document.getElementById('message').value = '';
+                });
+        });
+    </script>
+</body>
+
+</html>
