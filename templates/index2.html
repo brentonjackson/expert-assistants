@@ -59,7 +59,7 @@
                     const tabButton = document.createElement('button');
                     tabButton.className = 'tab-button';
                     tabButton.id = `tab-${subject}`;
-                    tabButton.innerHTML = `${subject}`;
+                    tabButton.innerHTML = `${toTitleCase(subject)}`;
                     tabButton.onclick = function () {
                         const assistantDiv = document.getElementById(`assistant-${subject}`);
                         assistantDiv.classList.toggle('visible');
