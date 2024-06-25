@@ -74,7 +74,7 @@ class AssistantsHandler(AIHandler):
                     The GPT should only answer when the response is specifically related to {self.subject}.
                     """,
                 name=f"{self.subject} Assistant",
-                model="gpt-4o", # https://platform.openai.com/docs/models,
+                model="gpt-3.5-turbo", # https://platform.openai.com/docs/models,
                 temperature=0.0 # makes things more deterministic, up to 2 makes things more random,
             )
 
