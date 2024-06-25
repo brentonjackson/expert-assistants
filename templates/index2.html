@@ -63,6 +63,7 @@
                     tabButton.onclick = function () {
                         const assistantDiv = document.getElementById(`assistant-${subject}`);
                         assistantDiv.classList.toggle('visible');
+                        tabButton.classList.remove('has-message');
                     };
                     assistantsContainer.appendChild(tabButton);
 
