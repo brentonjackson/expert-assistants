@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Expert Opinions 🧠</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
 </head>
 
 <body>
@@ -16,13 +16,13 @@
     </form>
 
     <div id="chat-container">
-        <h2>Chat ✍️</h2>
-        <div id="chat-box" class="markdown-content"></div>
-        <form id="chat-form">
-            <input type="text" id="message" name="message" required>
-            <button type="submit">Send</button>
-        </form>
+        <div id="assistants-container"></div>
+        <div id="chat-box" class="chat-box-center"></div>
     </div>
+    <form id="chat-form">
+        <input type="text" id="message" name="message" required>
+        <button type="submit">Send</button>
+    </form>
 
     <!-- Loading spinner -->
     <div id="loading-spinner" class="spinner" style="display: none;"></div>
@@ -47,7 +47,6 @@
         document.getElementById('provision-form').addEventListener('submit', function (e) {
             e.preventDefault();
             const subject = document.getElementById('subject').value;
-            console.log("thread ID: ", threadID)
             fetch('/provision', {
                 method: 'POST',
                 headers: {
@@ -56,9 +55,24 @@
                 body: JSON.stringify({ subject, threadID: threadID })
             }).then(response => response.json())
                 .then(data => {
-                    document.getElementById('chat-box').innerHTML += `<p>${toTitleCase(data["subject"])} ${data["message"]}</p>`;
+                    const assistantsContainer = document.getElementById('assistants-container');
+                    const tabButton = document.createElement('button');
+                    tabButton.className = 'tab-button';
+                    tabButton.id = `tab-${subject}`;
+                    tabButton.innerHTML = `${subject}`;
+                    tabButton.onclick = function () {
+                        const assistantDiv = document.getElementById(`assistant-${subject}`);
+                        assistantDiv.classList.toggle('visible');
+                    };
+                    assistantsContainer.appendChild(tabButton);
+
+                    const assistantDiv = document.createElement('div');
+                    assistantDiv.className = 'assistant';
+                    assistantDiv.id = `assistant-${subject}`;
+                    assistantDiv.innerHTML = `<h3>${toTitleCase(subject)} AI</h3><div class="messages"></div>`;
+                    document.body.appendChild(assistantDiv);
+                    document.getElementById('chat-box').innerHTML += `<p class="ai-response">${toTitleCase(data["subject"])} ${data["message"]}</p>`;
                 });
-            document.getElementById('subject').value = '';
         });
 
         document.getElementById('chat-form').addEventListener('submit', function (e) {
@@ -66,6 +80,7 @@
             const message = document.getElementById('message').value;
             const subjectInput = document.getElementById('subject').value;
             const subject = subjectInput || 'general';
+            // Show the loading spinner
             document.getElementById('loading-spinner').style.display = 'block';
             fetch('/chat', {
                 method: 'POST',
@@ -75,26 +90,28 @@
                 body: JSON.stringify({ message, subject })
             }).then(response => response.json())
                 .then(data => {
-                    console.log(data)
                     let ai_responses = data["responses"];
-                    // console.log(ai_responses) this is an object w/ keys of subject and values of message
-                    for (let subject in ai_responses) {
-                        document.getElementById('chat-box').innerHTML += `<p><h3>${toTitleCase(subject)}:</h3> ${ai_responses[subject]}</p>`;
+                    document.getElementById('chat-box').innerHTML += `<div class="message user-message">You: ${message}</div>`;
+                    for (const [subject, response] of Object.entries(data.responses)) {
+                        const assistantDiv = document.getElementById(`assistant-${subject}`);
+                        if (assistantDiv) {
+                            assistantDiv.querySelector('.messages').innerHTML += `<div class="message ai-message"><strong>${toTitleCase(subject)}:</strong><div>${response}</div></div>`;
+                            document.getElementById(`tab-${subject}`).classList.add('has-message');
+                            assistantDiv.classList.add('visible');
+                        } else {
+                            document.getElementById('chat-box').innerHTML += `<div class="message ai-message"><strong>${toTitleCase(subject)}:</strong><div>${response}</div></div>`;
+                        }
                     }
-                    // document.getElementById('chat-box').innerHTML += `<p>You: ${message}</p><p>AI: ${data}</p>`;
                     document.getElementById('message').value = '';
                     // Hide the loading spinner
                     document.getElementById('loading-spinner').style.display = 'none';
                 });
         });
-
-
         function toTitleCase(str) {
             return str.replace(/\w\S*/g, function (txt) {
                 return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             });
         }
-
     </script>
 </body>
 
