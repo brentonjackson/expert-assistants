@@ -73,6 +73,7 @@
                     assistantDiv.innerHTML = `<h3>${toTitleCase(subject)} AI</h3><div class="messages"></div>`;
                     document.body.appendChild(assistantDiv);
                     document.getElementById('chat-box').innerHTML += `<p class="ai-response">${toTitleCase(data["subject"])} ${data["message"]}</p>`;
+                    document.getElementById('subject').value = ''
                 });
         });
 
