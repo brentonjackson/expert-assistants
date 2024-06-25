@@ -47,7 +47,7 @@ def start_session():
             "ai_handler" :ai_handler,
         }
 
-    return jsonify({'threadID': assistants_thread, "message": "AI assistant joined the chat. 🔥", "subject": subject}), 200
+    return jsonify({'threadID': assistants_thread, "message": "AI assistant has joined the chat. 🔥", "subject": subject}), 200
 
 
 @app.route('/provision', methods=['POST'])
@@ -64,7 +64,7 @@ def provision():
             "subject": subject, 
             "ai_handler": ai_handler
         }
-    return jsonify({"message": "AI assistant joined the chat. 🔥", "subject": subject})
+    return jsonify({"message": "AI assistant has joined the chat. 🔥", "subject": subject})
 
 @app.route('/chat', methods=['POST'])
 def chat():
