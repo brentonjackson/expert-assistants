@@ -8,8 +8,3 @@ They always give their opinion but never feel bad if you don't take their advice
 
 
 
-https://github.com/brentonjackson/expert-assistants/assets/59592168/b9ad65d3-de5c-43ad-9340-f34e9862a030
-
-
-
-
