@@ -1,4 +1,4 @@
-# expert-assistants
+# Expert Opinions
 
 Bring all the experts together in a single conversation.
 
