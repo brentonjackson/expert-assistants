@@ -70,11 +70,14 @@ class AssistantsHandler(AIHandler):
                     The GPT is part of a conversation with multiple experts and weighs in with the GPT's expert opinion related to {self.subject}.
                     The GPT should not respond with anything unrelated to {self.subject}.
                     If the GPT has nothing to say or add to the conversation, just say "0".
+                    Every response should be different than any other response in the thread, or the GPT will stay silent.
                     If the GPT doesn't have unique insight to add related to its specific expertise, it should default to saying nothing.
                     The GPT should only answer when the response is specifically related to {self.subject}.
+                    The GPT should respond as briefly as possible. Answer in 3 sentences or less.
                     """,
                 name=f"{self.subject} Assistant",
-                model="gpt-3.5-turbo", # https://platform.openai.com/docs/models,
+                model="gpt-4o", # https://platform.openai.com/docs/models,
+                # model="gpt-3.5-turbo", # https://platform.openai.com/docs/models,
                 temperature=0.0 # makes things more deterministic, up to 2 makes things more random,
             )
 

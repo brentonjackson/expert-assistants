@@ -99,7 +99,7 @@
                         if (assistantDiv) {
                             assistantDiv.querySelector('.messages').innerHTML += `<div class="message ai-message"><strong>${toTitleCase(subject)}:</strong><div>${response}</div></div>`;
                             document.getElementById(`tab-${subject}`).classList.add('has-message');
-                            assistantDiv.classList.add('visible');
+                            // assistantDiv.classList.add('visible');
                         } else {
                             document.getElementById('chat-box').innerHTML += `<div class="message ai-message"><strong>${toTitleCase(subject)}:</strong><div>${response}</div></div>`;
                         }
